@@ -236,6 +236,7 @@ function finishQuiz(){
   go("result");
 }
 
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
 function bar(name,val){ return '<div class="barrow"><div class="nm">'+name+'</div><div class="tr"><i style="width:'+val+'%"></i></div><div class="vl">'+val+'</div></div>'; }
 function mini(name,val){ return '<div class="mini"><span class="mn">'+name+'</span><span class="mt"><i style="width:'+val+'%"></i></span><span class="mv">'+val+'</span></div>'; }
 function radarSVG(dom){
@@ -296,7 +297,7 @@ function stats(arr,d){
 function teamBars(arr){
   return FORDER.map(function(d){
     var st=stats(arr,d);
-    var pts=arr.map(function(m){return '<span title="'+m.name+': '+m.dom[d]+'" style="position:absolute;left:'+m.dom[d]+'%;top:50%;transform:translate(-50%,-50%);color:#8b6f3a;font-size:11px">◆</span>';}).join("");
+    var pts=arr.map(function(m){return '<span title="'+esc(m.name)+': '+m.dom[d]+'" style="position:absolute;left:'+m.dom[d]+'%;top:50%;transform:translate(-50%,-50%);color:#8b6f3a;font-size:11px">◆</span>';}).join("");
     return '<div class="barrow"><div class="nm">'+FNAME[d]+'</div><div class="tr"><i style="width:'+st.mean+'%"></i>'+pts+'</div><div class="vl">'+st.mean+'</div></div>';
   }).join("");
 }
@@ -320,7 +321,7 @@ function renderDashboard(){
   document.getElementById("dbars").innerHTML=teamBars(arr);
   document.getElementById("dinsights").innerHTML=insights(arr).map(function(x){ return '<div class="alert-box a-'+x[0]+'"><span class="a-tag">'+x[1]+'</span>'+x[2]+'</div>'; }).join("");
   var th='<tr><th>名前</th>'+FORDER.map(function(d){return "<th>"+FNAME[d]+"</th>";}).join("")+"<th></th></tr>";
-  var rows=arr.map(function(m,i){ return '<tr><td class="nm">'+m.name+"</td>"+FORDER.map(function(d){return "<td>"+m.dom[d]+"</td>";}).join("")+'<td><button class="btn danger sm" onclick="delMember('+i+')">削除</button></td></tr>'; }).join("");
+  var rows=arr.map(function(m,i){ return '<tr><td class="nm">'+esc(m.name)+"</td>"+FORDER.map(function(d){return "<td>"+m.dom[d]+"</td>";}).join("")+'<td><button class="btn danger sm" onclick="delMember('+i+')">削除</button></td></tr>'; }).join("");
   var avg='<tr><td class="nm">チーム平均</td>'+FORDER.map(function(d){return "<td><b>"+stats(arr,d).mean+"</b></td>";}).join("")+"<td></td></tr>";
   document.getElementById("dtable").innerHTML=th+rows+avg;
 }
