@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>チーム性格構成ダッシュボード（Big Five / 120問・30ファセット版）</title>
+<style>
+  :root{ --navy:#1a2b4a; --navy2:#2c4470; --accent:#8b6f3a; --bg:#f7f7f4; --card:#fff; --line:#e3e3dd; --warn:#b5651d; --alert:#9b2226; --info:#3a6ea5; --ok:#4a7c59; --txt:#222; --mut:#666; }
+  *{ box-sizing:border-box; }
+  body{ font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif; color:var(--txt); background:var(--bg); margin:0; line-height:1.7; }
+  .wrap{ max-width:900px; margin:0 auto; padding:24px 18px 80px; }
+  header{ background:var(--navy); color:#fff; padding:18px 0; }
+  header .wrap{ padding-top:0; padding-bottom:0; }
+  header h1{ font-size:18px; margin:0; font-weight:700; }
+  header .sub{ font-size:12px; opacity:.8; margin-top:2px; }
+  nav{ display:flex; gap:8px; margin:18px 0 8px; flex-wrap:wrap; }
+  nav button{ font:inherit; font-size:13px; border:1px solid var(--navy); background:#fff; color:var(--navy); padding:8px 14px; border-radius:6px; cursor:pointer; }
+  nav button.active{ background:var(--navy); color:#fff; }
+  h2{ font-size:20px; color:var(--navy); border-bottom:2px solid var(--navy); padding-bottom:6px; margin:28px 0 14px; }
+  h3{ font-size:15px; color:var(--navy2); margin:20px 0 8px; }
+  h4{ font-size:13px; color:var(--navy); margin:12px 0 4px; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px; margin:14px 0; }
+  .btn{ font:inherit; font-weight:700; background:var(--navy); color:#fff; border:none; padding:12px 22px; border-radius:8px; cursor:pointer; font-size:15px; }
+  .btn:hover{ background:var(--navy2); }
+  .btn.sec{ background:#fff; color:var(--navy); border:1px solid var(--navy); }
+  .btn.sm{ padding:7px 12px; font-size:13px; font-weight:500; }
+  .btn.danger{ background:#fff; color:var(--alert); border:1px solid var(--alert); }
+  .btn:disabled{ opacity:.4; cursor:default; }
+  .muted{ color:var(--mut); font-size:13px; }
+  .guard{ background:#fbf8ef; border:1px solid #e8dcc0; border-radius:8px; padding:14px 16px; margin:12px 0; }
+  .guard b{ color:var(--accent); }
+  .guard ul{ margin:8px 0 0; padding-left:20px; } .guard li{ margin:4px 0; font-size:13.5px; }
+  label.q{ display:block; font-size:15px; margin:0 0 10px; font-weight:600; }
+  .q .en{ display:block; font-size:11px; color:#999; font-weight:400; margin-top:2px; }
+  .scale{ display:flex; gap:6px; flex-wrap:wrap; }
+  .scale label{ flex:1; min-width:86px; text-align:center; font-size:12px; border:1px solid var(--line); border-radius:6px; padding:8px 4px; cursor:pointer; background:#fafafa; }
+  .scale input{ display:block; margin:0 auto 4px; }
+  .scale label.on{ background:var(--navy); color:#fff; border-color:var(--navy); }
+  .prog{ height:6px; background:var(--line); border-radius:3px; overflow:hidden; margin:6px 0 14px; }
+  .prog>i{ display:block; height:100%; background:var(--navy); width:0; transition:width .2s; }
+  .qnav{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:18px 0; }
+  .qnav #partlbl{ font-size:13px; color:var(--mut); font-weight:600; }
+  .barrow{ display:flex; align-items:center; gap:10px; margin:8px 0; }
+  .barrow .nm{ width:128px; font-size:13px; font-weight:600; }
+  .barrow .tr{ flex:1; background:#eee; border-radius:5px; height:18px; position:relative; }
+  .barrow .tr>i{ display:block; height:100%; border-radius:5px; background:var(--navy2); }
+  .barrow .vl{ width:42px; text-align:right; font-size:13px; font-variant-numeric:tabular-nums; }
+  .mini{ display:flex; align-items:center; gap:8px; margin:4px 0; }
+  .mini .mn{ width:120px; font-size:12px; color:#333; }
+  .mini .mt{ flex:1; background:#eee; border-radius:4px; height:12px; }
+  .mini .mt>i{ display:block; height:100%; border-radius:4px; background:var(--accent); }
+  .mini .mv{ width:32px; text-align:right; font-size:12px; font-variant-numeric:tabular-nums; color:#555; }
+  .facetgrp{ margin:10px 0 16px; padding:10px 12px; background:#fafafa; border-radius:8px; }
+  .facetgrp .fgh{ font-size:13px; font-weight:700; color:var(--navy); margin-bottom:6px; }
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th,td{ border:1px solid var(--line); padding:7px 8px; text-align:center; }
+  th{ background:var(--navy); color:#fff; font-weight:600; } td.nm{ text-align:left; font-weight:600; }
+  .alert-box{ border-radius:8px; padding:11px 14px; margin:9px 0; font-size:13.5px; border-left:5px solid; }
+  .a-alert{ background:#fdeceb; border-color:var(--alert); } .a-warn{ background:#fbf2e7; border-color:var(--warn); }
+  .a-info{ background:#eaf1f8; border-color:var(--info); } .a-ok{ background:#ecf3ee; border-color:var(--ok); }
+  .a-tag{ font-weight:700; margin-right:6px; }
+  .hide{ display:none; } .fnote{ font-size:11.5px; color:#999; margin-top:6px; }
+  .row{ display:flex; gap:18px; flex-wrap:wrap; align-items:flex-start; } .row>div{ flex:1; min-width:260px; }
+  input[type=text]{ font:inherit; padding:9px 12px; border:1px solid var(--line); border-radius:6px; width:100%; max-width:320px; }
+  .pill{ display:inline-block; font-size:11px; background:#eef; color:var(--navy2); border-radius:10px; padding:2px 9px; margin-left:6px; }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>チーム性格構成ダッシュボード <span class="pill">120問・30ファセット版</span></h1>
+  <div class="sub">IPIP-NEO-120：5因子を30の下位次元まで分解して、チームの傾向を「対話のきっかけ」にする</div>
+</div></header>
+<div class="wrap">
+<nav>
+  <button data-s="home" class="active">はじめに</button>
+  <button data-s="quiz">診断する</button>
+  <button data-s="result">個人結果</button>
+  <button data-s="dashboard">チームダッシュボード</button>
+</nav>
+
+<section id="home">
+  <h2>このツールについて</h2>
+  <div class="card">
+    <p>120の質問に答えると、性格の<b>5因子（Big Five）</b>と、その内訳である<b>30の下位次元（ファセット）</b>のスコアが出ます。たとえば「誠実性」は、有能感・秩序・勤勉さ・達成追求・自己鍛錬・慎重さの6つに分解されます。メンバーを登録すると<b>チーム全体の性格構成</b>を可視化し、編成や対話のヒントを示します。</p>
+    <p class="muted">質問項目は IPIP-NEO-120（Johnson, 2014／International Personality Item Pool, パブリックドメイン）の日本語訳です。5因子の信頼性 α=.81〜.90。所要時間の目安は15〜20分です。</p>
+  </div>
+  <div class="guard">
+    <b>⚠ このツールで「やらないこと」（重要）</b>
+    <ul>
+      <li><b>採用の合否・人事評価・昇進の判定には使いません。</b>性格スコアが仕事の成果を予測する力は中〜小です。</li>
+      <li><b>人を「タイプ」に分類しません。</b>連続的なスコアで傾向を見ます。</li>
+      <li><b>結果は固定ではありません。</b>状況や時期で変わり、受け直すと変動します。1回の結果を絶対視しないでください。</li>
+      <li><b>配置を「決定」する道具ではありません。</b>自己理解とチームの対話のきっかけです。決定は人が、実績と対話で。</li>
+    </ul>
+  </div>
+  <div class="card"><p style="margin-top:0"><b>データの扱い</b></p>
+    <p class="muted" style="margin:0">回答とスコアは、このブラウザの中（localStorage）だけに保存されます。サーバーには送信されません。共有・バックアップはダッシュボード画面の「書き出し／読み込み」で行えます。</p></div>
+  <p><button class="btn" onclick="go('quiz')">診断をはじめる →</button>
+     <button class="btn sec" onclick="go('dashboard')">チームダッシュボードを見る</button></p>
+</section>
+
+<section id="quiz" class="hide">
+  <h2>性格診断（120問）</h2>
+  <div class="card">
+    <label class="q" for="who">お名前 / ニックネーム <span class="muted">（チーム集計に使います）</span></label>
+    <input type="text" id="who" placeholder="例：田中 / Tanaka">
+  </div>
+  <div class="prog"><i id="prog"></i></div>
+  <p class="muted">各文が「どれくらい自分に当てはまるか」を選んでください。正解はありません。直感で。回答はページを移動しても保持されます。</p>
+  <div id="qlist"></div>
+  <div class="qnav">
+    <button id="prevb" class="btn sec" onclick="pageMove(-1)">← 前へ</button>
+    <span id="partlbl"></span>
+    <button id="nextb" class="btn" onclick="pageNext()">次へ →</button>
+  </div>
+  <p id="qmsg" class="muted"></p>
+</section>
+
+<section id="result" class="hide">
+  <h2>個人結果</h2>
+  <div id="rempty" class="card muted">まだ結果がありません。「診断する」から始めてください。</div>
+  <div id="rbody" class="hide">
+    <div class="card"><div class="row">
+      <div><h3 style="margin-top:0">5因子スコア <span class="muted" id="rwho"></span></h3><div id="rbars"></div></div>
+      <div style="flex:0 0 320px"><svg id="radar" width="320" height="300" viewBox="0 0 320 300"></svg></div>
+    </div></div>
+    <div class="card">
+      <h3 style="margin-top:0">30の下位次元（ファセット）の内訳</h3>
+      <div id="rfacets"></div>
+      <p class="fnote">各因子は6つの下位次元に分かれます。同じ「誠実性が高い」でも、秩序型か達成追求型かで強みが違います。ファセットは各4項目測定のため、因子全体よりも誤差が大きい点に留意してください。</p>
+    </div>
+    <div class="card"><h3 style="margin-top:0">各因子の読み方</h3><div id="rdesc"></div>
+      <p class="fnote">スコアは尺度上の相対位置（0〜100）で、規範集団との厳密な比較ではありません。高い・低いに優劣はありません。</p></div>
+    <div class="card"><p style="margin-top:0"><b>測定の限界</b></p>
+      <p class="muted" style="margin:0">自己申告にもとづく目安です。受け直すと結果は変動します。仕事ぶりやスキルは、この結果ではなく実績と対話で判断してください。</p></div>
+    <p><button class="btn" onclick="saveToTeam()">この結果をチームに登録 →</button>
+       <button class="btn sec" onclick="go('quiz')">もう一度診断</button>
+       <span id="rmsg" class="muted"></span></p>
+  </div>
+</section>
+
+<section id="dashboard" class="hide">
+  <h2>チームダッシュボード</h2>
+  <div id="dempty" class="card muted">まだメンバーが登録されていません。診断して「チームに登録」すると、ここにチームの性格構成が表示されます。</div>
+  <div id="dbody" class="hide">
+    <div class="card"><h3 style="margin-top:0">チームの性格構成（メンバー <span id="dcount"></span>名）</h3>
+      <div id="dbars"></div>
+      <p class="fnote">バー＝チーム平均。◆＝各メンバーの位置。研究では協調性・誠実性の「チーム平均」が成果と関連し、協調性は「最低値」も効く（最弱リンク）とされます（Bell, 2007 ほか）。</p></div>
+    <div class="card"><h3 style="margin-top:0">気づき（決定ではなく対話のきっかけ）</h3><div id="dinsights"></div></div>
+    <div class="card"><h3 style="margin-top:0">メンバー一覧（5因子）</h3>
+      <div style="overflow-x:auto"><table id="dtable"></table></div>
+      <p class="fnote">各メンバーの30ファセット詳細は、その人がもう一度「診断→個人結果」を開くと確認できます。</p></div>
+    <p><button class="btn sec sm" onclick="exportData()">書き出し（JSON）</button>
+       <button class="btn sec sm" onclick="document.getElementById('imp').click()">読み込み</button>
+       <input type="file" id="imp" accept="application/json" class="hide" onchange="importData(event)">
+       <button class="btn danger sm" onclick="clearAll()">全データ削除</button></p>
+  </div>
+</section>
+<p class="fnote">IPIP-NEO-120（public domain, Johnson 2014）を用いた組織内対話支援ツール。採用・評価・昇進の判定には使用しないでください。</p>
+</div>
+
+<script>
+"use strict";
+var ITEMS=[{"n": 1, "d": "N", "f": 1, "k": "p", "ja": "物事を心配する", "en": "Worry about things"}, {"n": 2, "d": "E", "f": 1, "k": "p", "ja": "友達をすぐに作れる", "en": "Make friends easily"}, {"n": 3, "d": "O", "f": 1, "k": "p", "ja": "鮮やかな想像力がある", "en": "Have a vivid imagination"}, {"n": 4, "d": "A", "f": 1, "k": "p", "ja": "他人を信頼する", "en": "Trust others"}, {"n": 5, "d": "C", "f": 1, "k": "p", "ja": "仕事をうまくやり遂げる", "en": "Complete tasks successfully"}, {"n": 6, "d": "N", "f": 2, "k": "p", "ja": "すぐに腹を立てる", "en": "Get angry easily"}, {"n": 7, "d": "E", "f": 2, "k": "p", "ja": "大人数のパーティーが好きだ", "en": "Love large parties"}, {"n": 8, "d": "O", "f": 2, "k": "p", "ja": "芸術は大切だと思う", "en": "Believe in the importance of art"}, {"n": 9, "d": "A", "f": 2, "k": "m", "ja": "自分の目的のために他人を利用する", "en": "Use others for my own ends"}, {"n": 10, "d": "C", "f": 2, "k": "p", "ja": "片付けるのが好きだ", "en": "Like to tidy up"}, {"n": 11, "d": "N", "f": 3, "k": "p", "ja": "よく気分が落ち込む", "en": "Often feel blue"}, {"n": 12, "d": "E", "f": 3, "k": "p", "ja": "進んで仕切る", "en": "Take charge"}, {"n": 13, "d": "O", "f": 3, "k": "p", "ja": "感情を強く感じる", "en": "Experience my emotions intensely"}, {"n": 14, "d": "A", "f": 3, "k": "p", "ja": "人を助けるのが好きだ", "en": "Love to help others"}, {"n": 15, "d": "C", "f": 3, "k": "p", "ja": "約束を守る", "en": "Keep my promises"}, {"n": 16, "d": "N", "f": 4, "k": "p", "ja": "人に話しかけるのが苦手だ", "en": "Find it difficult to approach others"}, {"n": 17, "d": "E", "f": 4, "k": "p", "ja": "いつも忙しくしている", "en": "Am always busy"}, {"n": 18, "d": "O", "f": 4, "k": "p", "ja": "決まりきったことより変化を好む", "en": "Prefer variety to routine"}, {"n": 19, "d": "A", "f": 4, "k": "m", "ja": "言い争いを好む", "en": "Love a good fight"}, {"n": 20, "d": "C", "f": 4, "k": "p", "ja": "一生懸命働く", "en": "Work hard"}, {"n": 21, "d": "N", "f": 5, "k": "p", "ja": "度を越して飲み食いしてしまう", "en": "Go on binges"}, {"n": 22, "d": "E", "f": 5, "k": "p", "ja": "刺激を好む", "en": "Love excitement"}, {"n": 23, "d": "O", "f": 5, "k": "p", "ja": "歯ごたえのある文章を読むのが好きだ", "en": "Love to read challenging material"}, {"n": 24, "d": "A", "f": 5, "k": "m", "ja": "自分は他人より優れていると思う", "en": "Believe that I am better than others"}, {"n": 25, "d": "C", "f": 5, "k": "p", "ja": "いつも準備を整えている", "en": "Am always prepared"}, {"n": 26, "d": "N", "f": 6, "k": "p", "ja": "すぐにパニックになる", "en": "Panic easily"}, {"n": 27, "d": "E", "f": 6, "k": "p", "ja": "喜びを周囲に振りまく", "en": "Radiate joy"}, {"n": 28, "d": "O", "f": 6, "k": "p", "ja": "リベラルな政治家に投票しがちだ", "en": "Tend to vote for liberal political candidates"}, {"n": 29, "d": "A", "f": 6, "k": "p", "ja": "路上生活者に同情する", "en": "Sympathize with the homeless"}, {"n": 30, "d": "C", "f": 6, "k": "m", "ja": "考えずに物事に飛び込む", "en": "Jump into things without thinking"}, {"n": 31, "d": "N", "f": 1, "k": "p", "ja": "最悪の事態を恐れる", "en": "Fear for the worst"}, {"n": 32, "d": "E", "f": 1, "k": "p", "ja": "人といて居心地がよい", "en": "Feel comfortable around people"}, {"n": 33, "d": "O", "f": 1, "k": "p", "ja": "奔放な空想を楽しむ", "en": "Enjoy wild flights of fantasy"}, {"n": 34, "d": "A", "f": 1, "k": "p", "ja": "他人には善意があると思う", "en": "Believe that others have good intentions"}, {"n": 35, "d": "C", "f": 1, "k": "p", "ja": "自分のやることで高い成果を出す", "en": "Excel in what I do"}, {"n": 36, "d": "N", "f": 2, "k": "p", "ja": "すぐにイライラする", "en": "Get irritated easily"}, {"n": 37, "d": "E", "f": 2, "k": "p", "ja": "集まりで色々な人と話す", "en": "Talk to a lot of different people at parties"}, {"n": 38, "d": "O", "f": 2, "k": "p", "ja": "人が気づかないものに美を見いだす", "en": "See beauty in things that others might not notice"}, {"n": 39, "d": "A", "f": 2, "k": "m", "ja": "得をするためにずるをする", "en": "Cheat to get ahead"}, {"n": 40, "d": "C", "f": 2, "k": "m", "ja": "物を元の場所に戻し忘れることが多い", "en": "Often forget to put things back in their proper place"}, {"n": 41, "d": "N", "f": 3, "k": "p", "ja": "自分が嫌いだ", "en": "Dislike myself"}, {"n": 42, "d": "E", "f": 3, "k": "p", "ja": "人を率いようとする", "en": "Try to lead others"}, {"n": 43, "d": "O", "f": 3, "k": "p", "ja": "他人の感情を感じ取る", "en": "Feel others' emotions"}, {"n": 44, "d": "A", "f": 3, "k": "p", "ja": "他人のことを気にかける", "en": "Am concerned about others"}, {"n": 45, "d": "C", "f": 3, "k": "p", "ja": "本当のことを言う", "en": "Tell the truth"}, {"n": 46, "d": "N", "f": 4, "k": "p", "ja": "自分が注目されるのを恐れる", "en": "Am afraid to draw attention to myself"}, {"n": 47, "d": "E", "f": 4, "k": "p", "ja": "いつも動き回っている", "en": "Am always on the go"}, {"n": 48, "d": "O", "f": 4, "k": "m", "ja": "慣れたものにこだわる", "en": "Prefer to stick with things that I know"}, {"n": 49, "d": "A", "f": 4, "k": "m", "ja": "人に怒鳴る", "en": "Yell at people"}, {"n": 50, "d": "C", "f": 4, "k": "p", "ja": "期待以上のことをする", "en": "Do more than what's expected of me"}, {"n": 51, "d": "N", "f": 5, "k": "m", "ja": "度を越すことはめったにない", "en": "Rarely overindulge"}, {"n": 52, "d": "E", "f": 5, "k": "p", "ja": "冒険を求める", "en": "Seek adventure"}, {"n": 53, "d": "O", "f": 5, "k": "m", "ja": "哲学的な議論を避ける", "en": "Avoid philosophical discussions"}, {"n": 54, "d": "A", "f": 5, "k": "m", "ja": "自分を高く評価している", "en": "Think highly of myself"}, {"n": 55, "d": "C", "f": 5, "k": "p", "ja": "計画を最後までやり遂げる", "en": "Carry out my plans"}, {"n": 56, "d": "N", "f": 6, "k": "p", "ja": "出来事に圧倒されてしまう", "en": "Become overwhelmed by events"}, {"n": 57, "d": "E", "f": 6, "k": "p", "ja": "おおいに楽しむ", "en": "Have a lot of fun"}, {"n": 58, "d": "O", "f": 6, "k": "p", "ja": "絶対的な善悪はないと思う", "en": "Believe that there is no absolute right and wrong"}, {"n": 59, "d": "A", "f": 6, "k": "p", "ja": "自分より恵まれない人に同情する", "en": "Feel sympathy for those who are worse off than myself"}, {"n": 60, "d": "C", "f": 6, "k": "m", "ja": "軽率な決断をする", "en": "Make rash decisions"}, {"n": 61, "d": "N", "f": 1, "k": "p", "ja": "多くのことを恐れる", "en": "Am afraid of many things"}, {"n": 62, "d": "E", "f": 1, "k": "m", "ja": "人との接触を避ける", "en": "Avoid contacts with others"}, {"n": 63, "d": "O", "f": 1, "k": "p", "ja": "空想にふけるのが好きだ", "en": "Love to daydream"}, {"n": 64, "d": "A", "f": 1, "k": "p", "ja": "人の言うことを信じる", "en": "Trust what people say"}, {"n": 65, "d": "C", "f": 1, "k": "p", "ja": "物事をそつなくこなす", "en": "Handle tasks smoothly"}, {"n": 66, "d": "N", "f": 2, "k": "p", "ja": "かっとなる", "en": "Lose my temper"}, {"n": 67, "d": "E", "f": 2, "k": "m", "ja": "一人でいるほうが好きだ", "en": "Prefer to be alone"}, {"n": 68, "d": "O", "f": 2, "k": "m", "ja": "詩が好きではない", "en": "Do not like poetry"}, {"n": 69, "d": "A", "f": 2, "k": "m", "ja": "他人につけ込む", "en": "Take advantage of others"}, {"n": 70, "d": "C", "f": 2, "k": "m", "ja": "部屋を散らかしたままにする", "en": "Leave a mess in my room"}, {"n": 71, "d": "N", "f": 3, "k": "p", "ja": "よくふさぎ込む", "en": "Am often down in the dumps"}, {"n": 72, "d": "E", "f": 3, "k": "p", "ja": "物事の主導権を握る", "en": "Take control of things"}, {"n": 73, "d": "O", "f": 3, "k": "m", "ja": "自分の感情の動きにあまり気づかない", "en": "Rarely notice my emotional reactions"}, {"n": 74, "d": "A", "f": 3, "k": "m", "ja": "他人の気持ちに無関心だ", "en": "Am indifferent to the feelings of others"}, {"n": 75, "d": "C", "f": 3, "k": "m", "ja": "規則を破る", "en": "Break rules"}, {"n": 76, "d": "N", "f": 4, "k": "p", "ja": "親しい友人といる時しか落ち着かない", "en": "Only feel comfortable with friends"}, {"n": 77, "d": "E", "f": 4, "k": "p", "ja": "余暇にもよく動く", "en": "Do a lot in my spare time"}, {"n": 78, "d": "O", "f": 4, "k": "m", "ja": "変化を嫌う", "en": "Dislike changes"}, {"n": 79, "d": "A", "f": 4, "k": "m", "ja": "人を侮辱する", "en": "Insult people"}, {"n": 80, "d": "C", "f": 4, "k": "m", "ja": "何とかなる程度しか働かない", "en": "Do just enough work to get by"}, {"n": 81, "d": "N", "f": 5, "k": "m", "ja": "誘惑に簡単に打ち勝てる", "en": "Easily resist temptations"}, {"n": 82, "d": "E", "f": 5, "k": "p", "ja": "無茶をするのが楽しい", "en": "Enjoy being reckless"}, {"n": 83, "d": "O", "f": 5, "k": "m", "ja": "抽象的な考えを理解するのが苦手だ", "en": "Have difficulty understanding abstract ideas"}, {"n": 84, "d": "A", "f": 5, "k": "m", "ja": "自分を高く買っている", "en": "Have a high opinion of myself"}, {"n": 85, "d": "C", "f": 5, "k": "m", "ja": "時間を無駄にする", "en": "Waste my time"}, {"n": 86, "d": "N", "f": 6, "k": "p", "ja": "物事に対処できないと感じる", "en": "Feel that I'm unable to deal with things"}, {"n": 87, "d": "E", "f": 6, "k": "p", "ja": "人生を愛している", "en": "Love life"}, {"n": 88, "d": "O", "f": 6, "k": "m", "ja": "保守的な政治家に投票しがちだ", "en": "Tend to vote for conservative political candidates"}, {"n": 89, "d": "A", "f": 6, "k": "m", "ja": "他人の問題に興味がない", "en": "Am not interested in other people's problems"}, {"n": 90, "d": "C", "f": 6, "k": "m", "ja": "物事に慌てて取りかかる", "en": "Rush into things"}, {"n": 91, "d": "N", "f": 1, "k": "p", "ja": "すぐにストレスを感じる", "en": "Get stressed out easily"}, {"n": 92, "d": "E", "f": 1, "k": "m", "ja": "人と距離を置く", "en": "Keep others at a distance"}, {"n": 93, "d": "O", "f": 1, "k": "p", "ja": "物思いにふけるのが好きだ", "en": "Like to get lost in thought"}, {"n": 94, "d": "A", "f": 1, "k": "m", "ja": "人を信用しない", "en": "Distrust people"}, {"n": 95, "d": "C", "f": 1, "k": "p", "ja": "物事の進め方を心得ている", "en": "Know how to get things done"}, {"n": 96, "d": "N", "f": 2, "k": "m", "ja": "めったにいら立たない", "en": "Am not easily annoyed"}, {"n": 97, "d": "E", "f": 2, "k": "m", "ja": "人混みを避ける", "en": "Avoid crowds"}, {"n": 98, "d": "O", "f": 2, "k": "m", "ja": "美術館に行くのを楽しめない", "en": "Do not enjoy going to art museums"}, {"n": 99, "d": "A", "f": 2, "k": "m", "ja": "他人の計画を妨げる", "en": "Obstruct others' plans"}, {"n": 100, "d": "C", "f": 2, "k": "m", "ja": "持ち物を置きっぱなしにする", "en": "Leave my belongings around"}, {"n": 101, "d": "N", "f": 3, "k": "m", "ja": "自分に納得している", "en": "Feel comfortable with myself"}, {"n": 102, "d": "E", "f": 3, "k": "m", "ja": "人が先導するのを待つ", "en": "Wait for others to lead the way"}, {"n": 103, "d": "O", "f": 3, "k": "m", "ja": "感情的になる人が理解できない", "en": "Don't understand people who get emotional"}, {"n": 104, "d": "A", "f": 3, "k": "m", "ja": "他人のために時間を割かない", "en": "Take no time for others"}, {"n": 105, "d": "C", "f": 3, "k": "m", "ja": "約束を破る", "en": "Break my promises"}, {"n": 106, "d": "N", "f": 4, "k": "m", "ja": "気まずい社交の場でも動じない", "en": "Am not bothered by difficult social situations"}, {"n": 107, "d": "E", "f": 4, "k": "m", "ja": "のんびりするのが好きだ", "en": "Like to take it easy"}, {"n": 108, "d": "O", "f": 4, "k": "m", "ja": "従来のやり方に愛着がある", "en": "Am attached to conventional ways"}, {"n": 109, "d": "A", "f": 4, "k": "m", "ja": "人に仕返しをする", "en": "Get back at others"}, {"n": 110, "d": "C", "f": 4, "k": "m", "ja": "仕事に時間も労力もあまりかけない", "en": "Put little time and effort into my work"}, {"n": 111, "d": "N", "f": 5, "k": "m", "ja": "自分の欲求を抑えられる", "en": "Am able to control my cravings"}, {"n": 112, "d": "E", "f": 5, "k": "p", "ja": "羽目を外して大胆にふるまう", "en": "Act wild and crazy"}, {"n": 113, "d": "O", "f": 5, "k": "m", "ja": "理論的な議論に興味がない", "en": "Am not interested in theoretical discussions"}, {"n": 114, "d": "A", "f": 5, "k": "m", "ja": "自分の長所を自慢する", "en": "Boast about my virtues"}, {"n": 115, "d": "C", "f": 5, "k": "m", "ja": "物事に取りかかるのが苦手だ", "en": "Have difficulty starting tasks"}, {"n": 116, "d": "N", "f": 6, "k": "m", "ja": "プレッシャーの下でも冷静でいられる", "en": "Remain calm under pressure"}, {"n": 117, "d": "E", "f": 6, "k": "p", "ja": "人生の明るい面を見る", "en": "Look at the bright side of life"}, {"n": 118, "d": "O", "f": 6, "k": "m", "ja": "犯罪には厳しく対処すべきだと思う", "en": "Believe that we should be tough on crime"}, {"n": 119, "d": "A", "f": 6, "k": "m", "ja": "困っている人のことは考えないようにする", "en": "Try not to think about the needy"}, {"n": 120, "d": "C", "f": 6, "k": "m", "ja": "考えずに行動する", "en": "Act without thinking"}];
+var FACETS={"N": {"1": "不安", "2": "怒り", "3": "抑うつ", "4": "自意識", "5": "衝動性", "6": "傷つきやすさ"}, "E": {"1": "親しみやすさ", "2": "社交性", "3": "自己主張", "4": "活動性", "5": "刺激希求", "6": "陽気さ"}, "O": {"1": "想像力", "2": "芸術への関心", "3": "情動性", "4": "冒険性", "5": "知性", "6": "自由主義"}, "A": {"1": "信頼", "2": "実直さ", "3": "利他性", "4": "協調", "5": "慎み深さ", "6": "共感"}, "C": {"1": "有能感", "2": "秩序", "3": "勤勉さ", "4": "達成追求", "5": "自己鍛錬", "6": "慎重さ"}};
+var FORDER=["O","C","E","A","N"];
+var FNAME={O:"開放性",C:"誠実性",E:"外向性",A:"協調性",N:"神経症傾向"};
+var SCALE=["全く違う","やや違う","どちらとも","やや当てはまる","非常に当てはまる"];
+var KEY="teamBigFiveData_v2";
+var PER=20, NP=Math.ceil(ITEMS.length/PER), PAGE=0;
+var ANS=new Array(ITEMS.length).fill(null);
+var lastResult=null;
+
+function go(s){
+  ["home","quiz","result","dashboard"].forEach(function(id){ document.getElementById(id).classList.toggle("hide", id!==s); });
+  document.querySelectorAll("nav button").forEach(function(b){ b.classList.toggle("active", b.dataset.s===s); });
+  if(s==="quiz") renderQuiz();
+  if(s==="result") renderResult();
+  if(s==="dashboard") renderDashboard();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll("nav button").forEach(function(b){ b.addEventListener("click", function(){ go(b.dataset.s); }); });
+
+function renderQuiz(){
+  var box=document.getElementById("qlist"); box.innerHTML="";
+  var start=PAGE*PER, end=Math.min(start+PER, ITEMS.length);
+  document.getElementById("partlbl").textContent="Part "+(PAGE+1)+" / "+NP;
+  for(var i=start;i<end;i++){
+    var it=ITEMS[i];
+    var c=document.createElement("div"); c.className="card";
+    var h='<label class="q">'+(i+1)+". "+it.ja+'<span class="en">'+it.en+"</span></label>";
+    var sc='<div class="scale">';
+    for(var v=1;v<=5;v++){ sc+='<label data-i="'+i+'" data-v="'+v+'"'+(ANS[i]===v?' class="on"':"")+'><input type="radio" name="q'+i+'" value="'+v+'"'+(ANS[i]===v?" checked":"")+">"+SCALE[v-1]+"</label>"; }
+    sc+="</div>"; c.innerHTML=h+sc; box.appendChild(c);
+  }
+  box.querySelectorAll(".scale label").forEach(function(l){
+    l.addEventListener("click", function(){
+      var i=parseInt(l.dataset.i,10), v=parseInt(l.dataset.v,10);
+      ANS[i]=v;
+      l.parentNode.querySelectorAll("label").forEach(function(x){x.classList.remove("on");});
+      l.classList.add("on"); updateProg();
+    });
+  });
+  document.getElementById("prevb").disabled=(PAGE===0);
+  document.getElementById("nextb").textContent=(PAGE===NP-1)?"結果を見る →":"次へ →";
+  document.getElementById("qmsg").textContent="";
+  updateProg(); window.scrollTo(0,0);
+}
+function pageMove(d){ var p=PAGE+d; if(p<0||p>=NP)return; PAGE=p; renderQuiz(); }
+function pageNext(){ if(PAGE===NP-1){ finishQuiz(); } else { pageMove(1); } }
+function updateProg(){ var done=ANS.filter(function(x){return x!==null;}).length; document.getElementById("prog").style.width=(done/ITEMS.length*100)+"%"; }
+function score(a){
+  var ds={},dc={},fs={},fc={};
+  ITEMS.forEach(function(it,i){
+    var v=a[i]; if(v==null)return;
+    var adj=it.k==="p"? v : (6-v);
+    ds[it.d]=(ds[it.d]||0)+adj; dc[it.d]=(dc[it.d]||0)+1;
+    var fk=it.d+it.f; fs[fk]=(fs[fk]||0)+adj; fc[fk]=(fc[fk]||0)+1;
+  });
+  var dom={},fac={};
+  FORDER.forEach(function(d){ dom[d]=Math.round((ds[d]/dc[d]-1)/4*100); });
+  Object.keys(fs).forEach(function(fk){ fac[fk]=Math.round((fs[fk]/fc[fk]-1)/4*100); });
+  return {dom:dom, fac:fac};
+}
+function finishQuiz(){
+  var idx=ANS.indexOf(null);
+  if(idx!==-1){
+    var miss=ANS.filter(function(x){return x===null;}).length;
+    PAGE=Math.floor(idx/PER); renderQuiz();
+    document.getElementById("qmsg").textContent="未回答が "+miss+" 問あります（"+(idx+1)+"問目へ移動しました）。";
+    return;
+  }
+  var who=(document.getElementById("who").value||"").trim()||"（名前なし）";
+  var s=score(ANS); lastResult={name:who, dom:s.dom, fac:s.fac, ts:Date.now()};
+  go("result");
+}
+
+function bar(name,val){ return '<div class="barrow"><div class="nm">'+name+'</div><div class="tr"><i style="width:'+val+'%"></i></div><div class="vl">'+val+'</div></div>'; }
+function mini(name,val){ return '<div class="mini"><span class="mn">'+name+'</span><span class="mt"><i style="width:'+val+'%"></i></span><span class="mv">'+val+'</span></div>'; }
+function radarSVG(dom){
+  var cx=160,cy=150,R=105,n=FORDER.length;
+  var ang=function(i){return -Math.PI/2 + i*2*Math.PI/n;};
+  var pt=function(i,rad){return [cx+rad*Math.cos(ang(i)), cy+rad*Math.sin(ang(i))];};
+  var s="";
+  [0.25,0.5,0.75,1].forEach(function(g){ var p=[]; for(var i=0;i<n;i++){var q=pt(i,R*g);p.push(q[0].toFixed(1)+","+q[1].toFixed(1));} s+='<polygon points="'+p.join(" ")+'" fill="none" stroke="#e3e3dd"/>'; });
+  for(var i=0;i<n;i++){ var p=pt(i,R); s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#e3e3dd"/>'; var lp=pt(i,R+22); s+='<text x="'+lp[0].toFixed(1)+'" y="'+lp[1].toFixed(1)+'" font-size="12" fill="#1a2b4a" text-anchor="middle" dominant-baseline="middle">'+FNAME[FORDER[i]]+'</text>'; }
+  var dp=[]; for(var i=0;i<n;i++){var q=pt(i,R*dom[FORDER[i]]/100);dp.push(q[0].toFixed(1)+","+q[1].toFixed(1));}
+  s+='<polygon points="'+dp.join(" ")+'" fill="rgba(44,68,112,0.25)" stroke="#1a2b4a" stroke-width="2"/>';
+  for(var i=0;i<n;i++){var q=pt(i,R*dom[FORDER[i]]/100);s+='<circle cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="3" fill="#1a2b4a"/>';}
+  return s;
+}
+var DESC={
+ O:{hi:"新しいアイデアや抽象的な発想、変化を好む傾向。企画・発想・改善の場で力を発揮しやすい。",lo:"現実的で手堅く、慣れたやり方を好む傾向。安定した運用や具体的な実務で強みが出やすい。"},
+ C:{hi:"計画的で約束や締切を守る傾向。実行・品質管理・段取りで頼りにされやすい。",lo:"柔軟で即興的に動ける傾向。型にはまらない対応や臨機応変さが活きる場面がある。"},
+ E:{hi:"人と関わることで力が出る傾向。対人・発信・場を動かす役割に向きやすい。",lo:"一人や少人数でじっくり進める傾向。集中作業や熟考する役割で力を発揮しやすい。"},
+ A:{hi:"協力的で他者の気持ちに配慮する傾向。チームの協働や調整役に向きやすい。",lo:"率直で批判的な視点を持つ傾向。交渉や厳しい評価が必要な場面で機能することがある。"},
+ N:{hi:"感情の動きが大きく敏感に反応する傾向。リスクに気づきやすい一方、高ストレス下ではケアが助けになる。",lo:"落ち着いてストレスに動じにくい傾向。プレッシャーのかかる局面で安定して動きやすい。"}
+};
+function renderResult(){
+  if(!lastResult){ document.getElementById("rempty").classList.remove("hide"); document.getElementById("rbody").classList.add("hide"); return; }
+  document.getElementById("rempty").classList.add("hide"); document.getElementById("rbody").classList.remove("hide");
+  document.getElementById("rwho").textContent="（"+lastResult.name+"）";
+  var dom=lastResult.dom, fac=lastResult.fac;
+  document.getElementById("rbars").innerHTML=FORDER.map(function(d){return bar(FNAME[d],dom[d]);}).join("");
+  document.getElementById("radar").innerHTML=radarSVG(dom);
+  document.getElementById("rfacets").innerHTML=FORDER.map(function(d){
+    var g='<div class="facetgrp"><div class="fgh">'+FNAME[d]+'（'+dom[d]+'）の内訳</div>';
+    for(var f=1;f<=6;f++){ var fk=d+f; g+=mini(FACETS[d][f], fac[fk]!=null?fac[fk]:0); }
+    return g+"</div>";
+  }).join("");
+  document.getElementById("rdesc").innerHTML=FORDER.map(function(d){
+    var v=dom[d]; var t=v>=60?DESC[d].hi : v<=40?DESC[d].lo : "中間的で、状況に応じて両面が出やすい傾向。";
+    var tag=v>=60?"高め":v<=40?"低め":"中間";
+    return '<p style="margin:6px 0"><b>'+FNAME[d]+'</b> <span class="muted">'+tag+'（'+v+'）</span><br>'+t+'</p>';
+  }).join("");
+  document.getElementById("rmsg").textContent="";
+}
+
+function load(){ try{return JSON.parse(localStorage.getItem(KEY))||[];}catch(e){return [];} }
+function save(arr){ localStorage.setItem(KEY, JSON.stringify(arr)); }
+function saveToTeam(){
+  if(!lastResult) return; var arr=load();
+  var ex=arr.findIndex(function(m){return m.name===lastResult.name;});
+  if(ex!==-1){ if(!confirm("「"+lastResult.name+"」は登録済みです。上書きしますか？")) return; arr[ex]=lastResult; }
+  else { arr.push(lastResult); }
+  save(arr); document.getElementById("rmsg").textContent="✓ チームに登録しました。";
+}
+
+function stats(arr,d){
+  var v=arr.map(function(m){return m.dom[d];});
+  var mean=v.reduce(function(a,b){return a+b;},0)/v.length;
+  var sd=Math.sqrt(v.reduce(function(a,b){return a+(b-mean)*(b-mean);},0)/v.length);
+  return {mean:Math.round(mean), min:Math.min.apply(null,v), max:Math.max.apply(null,v), sd:Math.round(sd)};
+}
+function teamBars(arr){
+  return FORDER.map(function(d){
+    var st=stats(arr,d);
+    var pts=arr.map(function(m){return '<span title="'+m.name+': '+m.dom[d]+'" style="position:absolute;left:'+m.dom[d]+'%;top:50%;transform:translate(-50%,-50%);color:#8b6f3a;font-size:11px">◆</span>';}).join("");
+    return '<div class="barrow"><div class="nm">'+FNAME[d]+'</div><div class="tr"><i style="width:'+st.mean+'%"></i>'+pts+'</div><div class="vl">'+st.mean+'</div></div>';
+  }).join("");
+}
+function insights(arr){
+  var out=[]; var A=stats(arr,"A"),C=stats(arr,"C"),O=stats(arr,"O"),N=stats(arr,"N"),E=stats(arr,"E");
+  if(A.min<=30) out.push(["alert","最弱リンク注意","協調性の最低値が低めのメンバーがいます。1名の非協力傾向がチームの調和に影響しうる（Bell 2007）。排除ではなく、独立性の高いタスク配分と1on1で摩擦を減らす設計を。"]);
+  if(A.mean<40) out.push(["warn","協働の摩擦","協調性のチーム平均が低め。役割分担と合意形成のルールを明確にし、対立を建設的に扱う場づくりを。"]);
+  if(C.mean<40) out.push(["warn","実行力の補完","誠実性のチーム平均が低め。締切・進捗をチェックリストや定例で仕組み化し、実行を構造で支えると安定します。"]);
+  if(O.mean<40 && O.sd<12) out.push(["warn","発想の偏り","開放性が一様に低め。新しい発想が出にくい構成です。異なる視点の人を加える・外部の刺激を入れる等を検討。"]);
+  if(O.sd>=20) out.push(["info","認知的多様性","開放性のバラツキが大きい構成。アイデアの衝突を創造性に変えられる一方、感情的対立に転化させないファシリテーションが鍵。"]);
+  if(N.mean>60) out.push(["warn","ストレス耐性","神経症傾向のチーム平均が高め。高ストレス局面では心理的安全性の確保とこまめなケアが効きます。"]);
+  if(E.sd>=25) out.push(["info","発言量の偏り","外向性のバラツキが大きい構成。声の大きい人に議論が偏りがち。書面で意見を集める等、発言機会を均等にする工夫を。"]);
+  if(out.length===0) out.push(["ok","際立ったリスク指標なし","現時点で目立つ偏りはありません。それでもこの結果は対話のきっかけとして使い、配置や評価の決定材料にはしないでください。"]);
+  return out;
+}
+function renderDashboard(){
+  var arr=load();
+  if(arr.length===0){ document.getElementById("dempty").classList.remove("hide"); document.getElementById("dbody").classList.add("hide"); return; }
+  document.getElementById("dempty").classList.add("hide"); document.getElementById("dbody").classList.remove("hide");
+  document.getElementById("dcount").textContent=arr.length;
+  document.getElementById("dbars").innerHTML=teamBars(arr);
+  document.getElementById("dinsights").innerHTML=insights(arr).map(function(x){ return '<div class="alert-box a-'+x[0]+'"><span class="a-tag">'+x[1]+'</span>'+x[2]+'</div>'; }).join("");
+  var th='<tr><th>名前</th>'+FORDER.map(function(d){return "<th>"+FNAME[d]+"</th>";}).join("")+"<th></th></tr>";
+  var rows=arr.map(function(m,i){ return '<tr><td class="nm">'+m.name+"</td>"+FORDER.map(function(d){return "<td>"+m.dom[d]+"</td>";}).join("")+'<td><button class="btn danger sm" onclick="delMember('+i+')">削除</button></td></tr>'; }).join("");
+  var avg='<tr><td class="nm">チーム平均</td>'+FORDER.map(function(d){return "<td><b>"+stats(arr,d).mean+"</b></td>";}).join("")+"<td></td></tr>";
+  document.getElementById("dtable").innerHTML=th+rows+avg;
+}
+function delMember(i){ var arr=load(); if(!arr[i])return; if(!confirm("「"+arr[i].name+"」を削除しますか？"))return; arr.splice(i,1); save(arr); renderDashboard(); }
+function clearAll(){ if(!confirm("全メンバーのデータを削除します。よろしいですか？"))return; localStorage.removeItem(KEY); renderDashboard(); }
+function exportData(){ var b=new Blob([JSON.stringify(load(),null,2)],{type:"application/json"}); var a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="team_bigfive_data.json"; a.click(); }
+function importData(ev){ var f=ev.target.files[0]; if(!f)return; var r=new FileReader();
+  r.onload=function(){ try{ var d=JSON.parse(r.result); if(!Array.isArray(d))throw 0; var cur=load();
+    d.forEach(function(m){ if(m&&m.name&&m.dom){ var ix=cur.findIndex(function(c){return c.name===m.name;}); if(ix!==-1)cur[ix]=m; else cur.push(m); } });
+    save(cur); renderDashboard(); alert("読み込みました（"+d.length+"件）。"); }catch(e){ alert("読み込めませんでした。JSON形式を確認してください。"); } };
+  r.readAsText(f);
+}
+go("home");
+</script>
+</body>
+</html>
